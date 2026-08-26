@@ -9,7 +9,7 @@ from utils import get_face_encoding, serialize_encoding, find_matches, convert_t
 # --- APP CONFIGURATION ---
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_super_secret_key' # Change this!
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:@localhost/thirdeye_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///thirdeye_db.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = 'static/person_db'
 app.config['SKETCH_UPLOAD_FOLDER'] = 'static/uploads'
