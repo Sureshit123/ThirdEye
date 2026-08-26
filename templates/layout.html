@@ -64,17 +64,16 @@
                             <li class="nav-item">
                                 <a class="nav-link {% if request.endpoint == 'admin_dashboard' %}active{% endif %}" href="{{ url_for('admin_dashboard') }}">Admin Dashboard</a>
                             </li>
-                        {% else %}
-                             <li class="nav-item">
-                                <a class="nav-link {% if request.endpoint == 'sketch_constructor' %}active{% endif %}" href="{{ url_for('sketch_constructor') }}">Sketch Constructor</a>
-                            </li>
-                             <li class="nav-item">
-                                <a class="nav-link {% if request.endpoint == 'recognition' %}active{% endif %}" href="{{ url_for('recognition') }}">Face Recognition</a>
-                            </li>
-                             <li class="nav-item">
-                                <a class="nav-link {% if request.endpoint == 'photo_to_sketch' %}active{% endif %}" href="{{ url_for('photo_to_sketch') }}">Photo to Sketch</a>
-                            </li>
                         {% endif %}
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.endpoint == 'sketch_constructor' %}active{% endif %}" href="{{ url_for('sketch_constructor') }}">Sketch Constructor</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.endpoint == 'recognition' %}active{% endif %}" href="{{ url_for('recognition') }}">Face Recognition</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.endpoint == 'photo_to_sketch' %}active{% endif %}" href="{{ url_for('photo_to_sketch') }}">Photo to Sketch</a>
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
                         </li>

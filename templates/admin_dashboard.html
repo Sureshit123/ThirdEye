@@ -93,21 +93,54 @@
 
         <div class="row justify-content-center g-4">
             <!-- Add Person Card -->
-            <div class="col-md-5">
+            <div class="col-md-4">
                 <div class="action-card" data-bs-toggle="modal" data-bs-target="#addPersonModal">
                     <div class="action-card-icon">&#128100;</div>
-                    <h3>Add New Person</h3>
-                    <p>Enter details and upload a photo for a new person in the database.</p>
+                    <h3>Add Criminal Record</h3>
+                    <p>Upload criminal photo & details to store face encoding in the database.</p>
                 </div>
             </div>
 
             <!-- View Records Card -->
-            <div class="col-md-5">
+            <div class="col-md-4">
                 <div class="action-card" data-bs-toggle="modal" data-bs-target="#recordsModal">
                     <div class="action-card-icon">&#128220;</div>
                     <h3>Database Records</h3>
-                    <p>View, manage, and delete existing person records from the database.</p>
+                    <p>View, search, and manage existing criminal records in the database.</p>
                 </div>
+            </div>
+
+            <!-- Sketch Constructor Card -->
+            <div class="col-md-4">
+                <a href="{{ url_for('sketch_constructor') }}" class="text-decoration-none">
+                    <div class="action-card">
+                        <div class="action-card-icon">&#127912;</div>
+                        <h3>Construct Sketch</h3>
+                        <p>Build composite forensic facial sketch from facial components.</p>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Face Recognition Card -->
+            <div class="col-md-4">
+                <a href="{{ url_for('recognition') }}" class="text-decoration-none">
+                    <div class="action-card">
+                        <div class="action-card-icon">&#128065;</div>
+                        <h3>Match Sketch & Criminals</h3>
+                        <p>Upload a sketch to compare against database & find criminal matches.</p>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Photo to Sketch Card -->
+            <div class="col-md-4">
+                <a href="{{ url_for('photo_to_sketch') }}" class="text-decoration-none">
+                    <div class="action-card">
+                        <div class="action-card-icon">&#128248;</div>
+                        <h3>Photo to Sketch</h3>
+                        <p>Convert real photos into pencil sketches automatically.</p>
+                    </div>
+                </a>
             </div>
         </div>
     </div>
