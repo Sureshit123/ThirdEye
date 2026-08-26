@@ -1,0 +1,120 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<style>
+    /* Main container for the sketch page with gradient background */
+    .sketch-body {
+        background-image: linear-gradient(135deg, #6A11CB 0%, #ED0E88 100%);
+        color: #ffffff;
+        padding: 40px 0;
+        min-height: calc(100vh - 56px); /* Full viewport height minus navbar */
+    }
+
+    .sketch-title, .sketch-description {
+        text-align: center;
+        text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+    }
+    
+    .sketch-title {
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+    .sketch-description {
+        margin-bottom: 40px;
+    }
+
+    #sketch-container { 
+        display: flex; 
+        gap: 30px;
+        background: rgba(0, 0, 0, 0.2);
+        padding: 20px;
+        border-radius: 15px;
+    }
+    
+    /* Sidebar for facial parts */
+    #parts-sidebar { 
+        width: 220px; 
+        padding: 10px;
+        height: 550px; 
+        overflow-y: auto;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 10px;
+    }
+    .part-category h5 {
+        font-weight: 600;
+        padding-bottom: 5px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        margin-bottom: 10px;
+    }
+    .part-img { 
+        width: 70px; 
+        cursor: pointer; 
+        margin: 5px; 
+        border: 2px solid transparent;
+        border-radius: 8px;
+        transition: all 0.2s ease-in-out;
+        /* REMOVED: background: rgba(255, 255, 255, 0.1); */
+    }
+    .part-img:hover { 
+        border-color: #ffffff;
+        transform: scale(1.1);
+    }
+
+    /* Canvas Area */
+    #canvas-container { 
+        flex-grow: 1; 
+    }
+    #sketchCanvas { 
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        border-radius: 10px;
+        background-color: #ffffff;
+    }
+
+    /* Controls Styling */
+    .controls-container {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+    }
+    .controls-container .btn {
+        flex-grow: 1;
+        font-weight: 600;
+    }
+</style>
+
+<div class="sketch-body">
+    <div class="container">
+        <h1 class="sketch-title">Sketch Constructor</h1>
+        <p class="sketch-description">Click a facial part to add it to the canvas. Drag to move, use handles to resize/rotate.</p>
+
+        <div id="sketch-container">
+            <div id="parts-sidebar">
+                {% for category, images in parts.items() %}
+                <div class="part-category">
+                    <h5>{{ category.capitalize() }}</h5>
+                    {% for img_path in images %}
+                    <img src="{{ url_for('static', filename='sketch_parts/' + img_path) }}" class="part-img" data-part="{{ url_for('static', filename='sketch_parts/' + img_path) }}" alt="{{ category }}">
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+
+            <div id="canvas-container">
+                <canvas id="sketchCanvas" width="700" height="550"></canvas>
+                <div class="controls-container">
+                    <button id="bringForwardBtn" class="btn btn-info">Bring Forward</button>
+                    <button id="sendBackwardBtn" class="btn btn-info">Send Backward</button>
+                    <button id="deleteBtn" class="btn btn-warning">Delete Selected</button>
+                    <button id="downloadBtn" class="btn btn-success">Download Sketch</button>
+                    <a href="{{ url_for('recognition') }}" class="btn btn-primary">Go to Recognition</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+<script src="{{ url_for('static', filename='js/sketch.js') }}"></script>
+{% endblock %}

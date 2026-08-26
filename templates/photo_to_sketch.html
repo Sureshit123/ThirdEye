@@ -1,0 +1,122 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<style>
+    .converter-body {
+        /* This is the overall page background */
+        background-image: linear-gradient(135deg, #6A11CB 0%, #ED0E88 100%);
+        color: #ffffff;
+        padding: 50px 0;
+        min-height: calc(100vh - 56px);
+        display: flex;
+        align-items: center; /* Vertically center the content */
+    }
+
+    .page-title {
+        text-align: center;
+        font-weight: 700;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+    .page-description {
+        text-align: center;
+        margin-bottom: 40px;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* Style for the rectangular action containers */
+    .action-container {
+        /* Applying the green/blue gradient background */
+        background-image: linear-gradient(135deg, #00A9E2 0%, #A5D867 100%);
+        border-radius: 20px;
+        padding: 40px;
+        border: none;
+        box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.3);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        /* Increased height for a stylish look */
+        min-height: 400px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        font-size: 1.3rem;
+    }
+    
+    .form-control {
+        background: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: #ffffff;
+    }
+    .form-control::file-selector-button {
+        background-color: #ffffff;
+        color: #00A9E2;
+        border: none;
+        border-radius: 5px;
+        font-weight: 600;
+    }
+     .form-control:focus {
+        box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.5);
+    }
+    
+    .sketch-preview-container {
+        background: rgba(0,0,0,0.2);
+        border-radius: 10px;
+        padding: 15px;
+        text-align: center;
+    }
+    .sketch-preview-img {
+        max-width: 100%;
+        max-height: 220px;
+        border-radius: 5px;
+        background-color: white; /* Add a white bg to the preview for clarity */
+    }
+
+</style>
+
+<div class="converter-body">
+    <div class="container">
+        <h1 class="page-title">Photo to Sketch Converter</h1>
+        <p class="page-description lead">Upload a color photograph to convert it into a black and white sketch. You can then download the result and use it in the Face Recognition tool to test the system's accuracy.</p>
+
+        <div class="row justify-content-center g-4">
+            <!-- Left Container: Upload Form -->
+            <div class="col-lg-5 col-md-6">
+                <div class="action-container">
+                    <form method="POST" enctype="multipart/form-data">
+                        <div class="mb-4 text-center">
+                            <label for="photo" class="form-label">Upload a Photo</label>
+                            <input class="form-control mb-3" type="file" id="photo" name="photo" required accept="image/*">
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-light btn-lg fw-bold">Convert to Sketch</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Right Container: Status/Download -->
+            <div class="col-lg-5 col-md-6">
+                <div class="action-container text-center">
+                    <h4>Conversion Result</h4>
+                    {% if sketch_data_url %}
+                        <div class="sketch-preview-container mb-3">
+                             <img src="{{ sketch_data_url }}" alt="Converted Sketch" class="sketch-preview-img">
+                        </div>
+                        <div class="d-grid">
+                            <a href="{{ sketch_data_url }}" class="btn btn-light btn-lg fw-bold" download="converted_sketch.jpg">Download Sketch</a>
+                        </div>
+                    {% else %}
+                        <p class="lead mb-0">Your converted sketch will appear here after you upload a photo.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

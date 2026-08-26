@@ -1,0 +1,194 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<style>
+    .admin-dashboard-body {
+        background-image: linear-gradient(135deg, #007bff 0%, #00d4ff 100%);
+        min-height: calc(100vh - 56px); /* Full viewport height minus navbar */
+        padding: 50px 0;
+        color: #ffffff;
+    }
+
+    .dashboard-title {
+        text-align: center;
+        margin-bottom: 50px;
+        font-weight: 700;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .action-card {
+        /* CHANGED: New gradient background for the cards */
+        background-image: linear-gradient(135deg, #00A9E2 0%, #A5D867 100%);
+        border: none;
+        border-radius: 20px;
+        padding: 40px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+    }
+
+    .action-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.3); /* Enhanced hover effect */
+    }
+
+    .action-card-icon {
+        font-size: 4rem;
+        margin-bottom: 20px;
+    }
+
+    .action-card h3 {
+        font-weight: 600;
+    }
+
+    /* Modal Styling */
+    .modal-content-gradient {
+        background-image: linear-gradient(135deg, #6A11CB 0%, #ED0E88 100%);
+        color: #ffffff;
+        border: none;
+        border-radius: 20px;
+    }
+    .modal-header, .modal-footer {
+        border: none;
+    }
+    .modal-header .btn-close {
+        filter: invert(1) grayscale(100%) brightness(200%);
+    }
+
+    /* Form & Table inside Modal */
+    .modal-form .form-label {
+        color: rgba(255, 255, 255, 0.9);
+    }
+    .modal-form .form-control {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #ffffff;
+    }
+    .modal-form .form-control::placeholder {
+        color: rgba(255, 255, 255, 0.6);
+    }
+    .modal-form .form-control:focus {
+        background: rgba(255, 255, 255, 0.2);
+        color: #ffffff;
+        box-shadow: none;
+    }
+    .modal-table {
+        color: #ffffff;
+    }
+    .modal-table thead {
+        border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+    }
+    .modal-table tbody tr {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .modal-table td, .modal-table th {
+        vertical-align: middle;
+    }
+</style>
+
+<div class="admin-dashboard-body">
+    <div class="container">
+        <h1 class="dashboard-title">Admin Control Panel</h1>
+
+        <div class="row justify-content-center g-4">
+            <!-- Add Person Card -->
+            <div class="col-md-5">
+                <div class="action-card" data-bs-toggle="modal" data-bs-target="#addPersonModal">
+                    <div class="action-card-icon">&#128100;</div>
+                    <h3>Add New Person</h3>
+                    <p>Enter details and upload a photo for a new person in the database.</p>
+                </div>
+            </div>
+
+            <!-- View Records Card -->
+            <div class="col-md-5">
+                <div class="action-card" data-bs-toggle="modal" data-bs-target="#recordsModal">
+                    <div class="action-card-icon">&#128220;</div>
+                    <h3>Database Records</h3>
+                    <p>View, manage, and delete existing person records from the database.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Person Modal -->
+<div class="modal fade" id="addPersonModal" tabindex="-1" aria-labelledby="addPersonModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content modal-content-gradient">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addPersonModalLabel">Add New Person</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ url_for('add_person') }}" method="POST" enctype="multipart/form-data" class="modal-form">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="person_details" class="form-label">Details (Case notes, etc.)</label>
+                        <textarea class="form-control" id="person_details" name="person_details" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="photo" class="form-label">Person's Photo</label>
+                        <input type="file" class="form-control" id="photo" name="photo" accept="image/*" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Add Person</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Database Records Modal -->
+<div class="modal fade" id="recordsModal" tabindex="-1" aria-labelledby="recordsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content modal-content-gradient">
+            <div class="modal-header">
+                <h5 class="modal-title" id="recordsModalLabel">Database Records</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table modal-table">
+                        <thead>
+                            <tr>
+                                <th>Photo</th>
+                                <th>Name</th>
+                                <th>Details</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for person in persons %}
+                            <tr>
+                                <td><img src="{{ url_for('uploaded_file', filename=person.image_path) }}" alt="{{ person.name }}" width="80" class="rounded"></td>
+                                <td>{{ person.name }}</td>
+                                <td>{{ person.person_details }}</td>
+                                <td>
+                                    <a href="{{ url_for('delete_person', person_id=person.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</a>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center">No persons found in the database.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

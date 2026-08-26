@@ -1,0 +1,140 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<style>
+    /* Video Background Styling */
+    #bg-video {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        min-width: 100%;
+        min-height: 100%;
+        width: auto;
+        height: auto;
+        z-index: -100;
+        transform: translateX(-50%) translateY(-50%);
+        background-size: cover;
+    }
+
+    /* Main container to center the login form */
+    .login-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: calc(100vh - 56px); /* Full height minus navbar */
+        padding: 2rem;
+    }
+
+    /* Glassmorphism Login Card */
+    .login-card {
+        background: rgba(10, 25, 47, 0.8); /* Dark blue from your overall theme, semi-transparent */
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px); /* For Safari */
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: #ffffff;
+        padding: 2.5rem;
+        width: 100%;
+        max-width: 450px;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    }
+
+    .login-card .card-header {
+        background: transparent;
+        border-bottom: none;
+        text-align: center;
+        padding: 0 0 1.5rem 0;
+    }
+
+    .login-card h2 {
+        font-weight: 700;
+        color: #ffffff;
+    }
+
+    /* Form Styling */
+    .form-control {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #ffffff;
+        border-radius: 10px;
+    }
+
+    .form-control:focus {
+        background: rgba(255, 255, 255, 0.2);
+        color: #ffffff;
+        box-shadow: none;
+        border-color: rgba(255, 255, 255, 0.5);
+    }
+
+    .form-control::placeholder {
+        color: rgba(255, 255, 255, 0.6);
+    }
+
+    .form-label {
+        font-weight: 500;
+    }
+
+    /* Login Button with Gradient */
+    .btn-login {
+        background-image: linear-gradient(to right, #6A11CB 0%, #2575FC 100%);
+        border: none;
+        border-radius: 10px;
+        padding: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-login:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-footer {
+        background: transparent;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: 1.5rem;
+        margin-top: 1rem;
+    }
+
+    .card-footer a {
+        color: #a3b3d9; /* Light blue color for link */
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+    .card-footer a:hover {
+        color: #ffffff;
+    }
+
+</style>
+
+<!-- Video Background -->
+<video autoplay muted loop id="bg-video">
+    <source src="{{ url_for('static', filename='img/registrationbg.mp4') }}" type="video/mp4">
+    Your browser does not support the video tag.
+</video>
+
+<!-- Login Form Centered -->
+<div class="login-container">
+    <div class="login-card">
+        <div class="card-header">
+            <h2>Login to Your Account</h2>
+        </div>
+        <div class="card-body p-0">
+            <form method="POST" action="{{ url_for('login') }}">
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="username" name="username" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 btn-login">Login</button>
+            </form>
+        </div>
+        <div class="card-footer text-center">
+             <a href="{{ url_for('register') }}">Don't have an account? Register here</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

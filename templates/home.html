@@ -1,0 +1,203 @@
+{% extends "layout.html" %}
+{% block content %}
+<style>
+    /* Hero Section with Background Image */
+    .hero-section {
+        background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("{{ url_for('static', filename='img/bgforensic3.png') }}");
+        background-size: cover;
+        background-position: center;
+        color: white;
+        padding: 120px 0;
+        text-align: center;
+    }
+    .hero-section h1 {
+        font-size: 3.5rem;
+        font-weight: 700;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+    .hero-section p {
+        font-size: 1.25rem;
+        max-width: 700px;
+        margin: 20px auto;
+    }
+    .btn-hero {
+        font-size: 1.1rem;
+        padding: 12px 30px;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+    }
+
+    /* Section Styling */
+    .section {
+        padding: 80px 0;
+    }
+    .section-title {
+        text-align: center;
+        margin-bottom: 60px;
+        font-weight: 700;
+        position: relative;
+    }
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background-color: #0d6efd;
+    }
+
+    /* Features Section Specifics */
+    .feature-card {
+        text-align: center;
+        padding: 30px;
+        border-radius: 15px;
+        background-image: linear-gradient(120deg, #ED0E88 0%, #F9E03D 100%);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+        margin-bottom: 30px;
+        height: 100%;
+        border: none;
+    }
+    .feature-card:hover {
+        transform: translateY(-10px);
+    }
+    .feature-card h4 {
+        color: #ffffff;
+    }
+    .feature-card p {
+        color: rgba(255, 255, 255, 0.9);
+    }
+    .feature-icon {
+        font-size: 3rem;
+        color: #ffffff;
+        margin-bottom: 20px;
+    }
+
+    /* NEW: Dark Navy Background for all content sections */
+    .section-bg-navy {
+        background-color: #0A192F; /* Professional dark blue from reference */
+        color: #ffffff;
+    }
+    .section-bg-navy .section-title,
+    .section-bg-navy .step-item h5 {
+        color: #ffffff;
+    }
+    .section-bg-navy .section-title::after {
+        background-color: #00d4ff; /* Bright accent color */
+    }
+    .section-bg-navy p {
+        color: rgba(255, 255, 255, 0.85);
+    }
+
+
+    .step-item {
+        text-align: center;
+    }
+    .step-number {
+        width: 60px;
+        height: 60px;
+        background-color: #ffffff;
+        color: #0A192F; /* Dark navy text on white circle for contrast */
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+    }
+</style>
+
+<!-- Hero Section -->
+<div class="hero-section">
+    <div class="container">
+        <h1>ThirdEye Forensic System</h1>
+        <p>Bridging the gap between eyewitness memory and suspect identification through advanced AI-powered facial composite technology.</p>
+        <a href="{{ url_for('login') }}" class="btn btn-primary btn-hero">Get Started</a>
+    </div>
+</div>
+
+<!-- Importance Section -->
+<div id="importance" class="section section-bg-navy">
+    <div class="container">
+        <h2 class="section-title">Why ThirdEye Matters</h2>
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <p class="lead">In the critical moments of a criminal investigation, an accurate description of a suspect is paramount. Traditional sketch artistry is a rare skill and can be a bottleneck in the justice process. ThirdEye empowers law enforcement agencies by democratizing this capability.</p>
+                <p>Our platform provides a standardized, efficient, and highly effective tool to construct accurate facial composites based on witness descriptions. By leveraging artificial intelligence for recognition, we accelerate the identification process, increase accuracy, and bring perpetrators to justice faster.</p>
+            </div>
+            <div class="col-md-6">
+                <img src="{{ url_for('static', filename='img/bgadas.png') }}" class="img-fluid rounded shadow" alt="Abstract forensic technology graphic">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div id="features" class="section section-bg-navy">
+    <div class="container">
+        <h2 class="section-title">Core Features</h2>
+        <div class="row">
+            <!-- Feature 1 -->
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon">&#128373;</div>
+                    <h4>Interactive Sketch Constructor</h4>
+                    <p>Build detailed facial composites with an intuitive drag-and-drop interface. Choose from a vast library of facial features to create an accurate representation.</p>
+                </div>
+            </div>
+            <!-- Feature 2 -->
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon">&#129504;</div>
+                    <h4>AI-Powered Recognition</h4>
+                    <p>Upload a constructed sketch or a hand-drawn image to scan a secure database. Our AI model provides potential matches with similarity scores in seconds.</p>
+                </div>
+            </div>
+            <!-- Feature 3 -->
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon">&#128444;</div>
+                    <h4>Photo-to-Sketch Converter</h4>
+                    <p>Automatically convert any photograph into a high-quality line sketch, perfect for testing the system or for use in the recognition module.</p>
+                </div>
+            </div>
+            <!-- Feature 4 -->
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon">&#128272;</div>
+                    <h4>Secure & Role-Based</h4>
+                    <p>With distinct roles for Admins (managing data) and Users (forensic work), our system ensures data integrity and secure access control.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- How It Works Section -->
+<div id="how-it-works" class="section section-bg-navy">
+    <div class="container">
+        <h2 class="section-title">Our Process</h2>
+        <div class="row">
+            <div class="col-md-4 step-item">
+                <div class="step-number">1</div>
+                <h5>Construct or Upload</h5>
+                <p>Use the Sketch Constructor to build a composite from eyewitness details, or upload an existing hand-drawn sketch or converted photo.</p>
+            </div>
+            <div class="col-md-4 step-item">
+                <div class="step-number">2</div>
+                <h5>Initiate AI Search</h5>
+                <p>Submit the sketch to the Face Recognition module. Our deep learning model analyzes the key facial geometry and features.</p>
+            </div>
+            <div class="col-md-4 step-item">
+                <div class="step-number">3</div>
+                <h5>Analyze Matches</h5>
+                <p>Review a ranked list of potential matches from the database, complete with similarity scores and suspect details, to guide the investigation.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

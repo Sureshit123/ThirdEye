@@ -1,0 +1,159 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<style>
+    .recognition-body {
+        /* This is the overall page background, which remains the same */
+        background-image: linear-gradient(135deg, #6A11CB 0%, #ED0E88 100%);
+        color: #ffffff;
+        padding: 50px 0;
+        min-height: calc(100vh - 56px);
+    }
+
+    .page-title {
+        text-align: center;
+        font-weight: 700;
+        margin-bottom: 40px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    /* NEW: Style for the square action containers */
+    .action-container {
+        /* NEW: Applying the green/blue gradient background */
+        background-image: linear-gradient(135deg, #00A9E2 0%, #A5D867 100%);
+        border-radius: 20px;
+        padding: 40px;
+        border: none;
+        box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.3);
+        height: 100%; /* Make containers in a row equal height */
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* Center content vertically */
+    }
+
+    .form-label {
+        font-weight: 600;
+        font-size: 1.2rem;
+    }
+    
+    .form-control {
+        background: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: #ffffff;
+    }
+    .form-control::file-selector-button {
+        background-color: #ffffff;
+        color: #00A9E2;
+        border: none;
+        border-radius: 5px;
+        font-weight: 600;
+    }
+     .form-control:focus {
+        box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.5);
+    }
+
+
+    .results-title {
+        text-align: center;
+        margin-top: 50px; /* Add space above results */
+        margin-bottom: 30px;
+        font-weight: 600;
+    }
+
+    .match-card {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 15px;
+        overflow: hidden;
+        transition: transform 0.3s ease;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+    .match-card:hover {
+        transform: translateY(-5px);
+    }
+    .match-card-img {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+    }
+    .match-card .card-body {
+        padding: 20px;
+    }
+    .match-card .card-title {
+        font-weight: 700;
+    }
+     .match-card .card-footer {
+        background: rgba(0, 0, 0, 0.2);
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        font-size: 1.1rem;
+        font-weight: 600;
+     }
+
+</style>
+
+<div class="recognition-body">
+    <div class="container">
+        <h1 class="page-title">Face Sketch Recognition</h1>
+
+        <!-- NEW: Horizontal layout for main action containers -->
+        <div class="row justify-content-center g-4">
+            <!-- Left Square Container: Upload Form -->
+            <div class="col-lg-5 col-md-6">
+                <div class="action-container">
+                    <form method="POST" enctype="multipart/form-data">
+                        <div class="mb-4 text-center">
+                            <label for="sketch" class="form-label">Upload Sketch to Begin</label>
+                            <input class="form-control mb-3" type="file" id="sketch" name="sketch" required accept="image/*">
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-light btn-lg fw-bold">Find Potential Matches</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Right Square Container: Status/Info -->
+            <div class="col-lg-5 col-md-6">
+                <div class="action-container text-center">
+                    <h4>Analysis Status</h4>
+                    
+                    <!-- CORRECTED LOGIC BLOCK -->
+                    {% if results %}
+                        <p class="lead mb-0">Analysis Complete. See potential matches below.</p>
+                    {% elif results is not none and not results %}
+                         <p class="lead mb-0">No potential matches were found in the database meeting the required similarity threshold.</p>
+                    {% else %}
+                        <p class="lead mb-0">Upload a sketch to view potential matches and similarity scores here.</p>
+                    {% endif %}
+                    
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Results Section: Appears below the main containers -->
+        {% if results %}
+            <h2 class="results-title">Recognition Results</h2>
+            <div class="row g-4">
+                {% for result in results %}
+                <div class="col-md-4">
+                    <div class="match-card">
+                        <img src="{{ url_for('uploaded_file', filename=result.person.image_path) }}" class="match-card-img" alt="{{ result.person.name }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ result.person.name }}</h5>
+                            <p class="card-text"><strong>Details:</strong> {{ result.person.person_details }}</p>
+                        </div>
+                         <div class="card-footer text-center">
+                            <strong class="text-white">Similarity: {{ result.similarity }}%</strong>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}
+
