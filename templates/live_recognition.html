@@ -1,0 +1,392 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<style>
+    .live-body {
+        min-height: calc(100vh - 56px);
+        padding: 40px 0 60px;
+        color: #ffffff;
+        background-image: linear-gradient(
+            135deg,
+            #6A11CB 0%,
+            #ED0E88 100%
+        );
+    }
+
+    .page-title {
+        text-align: center;
+        font-weight: 700;
+        margin-bottom: 30px;
+    }
+
+    .camera-card {
+        background: rgba(255,255,255,0.12);
+        border: 1px solid rgba(255,255,255,0.22);
+        border-radius: 20px;
+        padding: 25px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        backdrop-filter: blur(10px);
+    }
+
+    .camera-wrapper {
+        position: relative;
+        width: 100%;
+        max-width: 720px;
+        margin: auto;
+        overflow: hidden;
+        border-radius: 16px;
+        background: #111111;
+        border: 2px solid rgba(255,255,255,0.25);
+    }
+
+    #video {
+        width: 100%;
+        height: auto;
+        display: block;
+        transform: scaleX(-1);
+    }
+
+    #canvas {
+        display: none;
+    }
+
+    .camera-status {
+        text-align: center;
+        margin-top: 15px;
+        font-weight: 600;
+        min-height: 24px;
+    }
+
+    .controls {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 20px;
+    }
+
+    .result-card {
+        margin-top: 30px;
+        text-align: center;
+    }
+
+    .sketch-preview {
+        display: block;
+        width: 100%;
+        max-width: 500px;
+        max-height: 600px;
+        object-fit: contain;
+        margin: 20px auto;
+        padding: 10px;
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.35);
+    }
+
+    .info-box {
+        max-width: 720px;
+        margin: 20px auto 0;
+        padding: 14px 18px;
+        border-radius: 12px;
+        background: rgba(0,0,0,0.18);
+    }
+</style>
+
+<div class="live-body">
+    <div class="container">
+
+        <h1 class="page-title">
+            Live Face Sketch Recognition
+        </h1>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-9">
+
+                <div class="camera-card">
+
+                    <h4 class="text-center mb-4">
+                        Live Camera
+                    </h4>
+
+                    <div class="camera-wrapper">
+                        <video
+                            id="video"
+                            autoplay
+                            muted
+                            playsinline
+                        ></video>
+                    </div>
+
+                    <canvas id="canvas"></canvas>
+
+                    <div id="status" class="camera-status">
+                        Click "Start Camera" to begin.
+                    </div>
+
+                    <div class="controls">
+
+                        <button
+                            id="startCamera"
+                            type="button"
+                            class="btn btn-light btn-lg fw-bold"
+                        >
+                            Start Camera
+                        </button>
+
+                        <button
+                            id="capture"
+                            type="button"
+                            class="btn btn-dark btn-lg fw-bold"
+                            disabled
+                        >
+                            Capture & Generate Sketch
+                        </button>
+
+                    </div>
+
+                    <div class="info-box text-center">
+                        Use a well-lit, front-facing view for the
+                        academic test demonstration.
+                    </div>
+
+                </div>
+
+                <div
+                    id="resultCard"
+                    class="camera-card result-card"
+                    style="display: none;"
+                >
+
+                    <h3>Generated Face Sketch</h3>
+
+                    <p>
+                        The captured face has been processed
+                        into a pencil-style sketch.
+                    </p>
+
+                    <img
+                        id="sketchImage"
+                        class="sketch-preview"
+                        alt="Generated face sketch"
+                    >
+
+                    <div class="controls">
+
+                        <a
+                            id="downloadSketch"
+                            href="#"
+                            class="btn btn-light fw-bold"
+                            download="live_face_sketch.jpg"
+                        >
+                            Download Sketch
+                        </a>
+
+                        <form
+                            method="POST"
+                            action="{{ url_for('recognition') }}"
+                            style="display:inline;"
+                        >
+                            <input
+                                type="hidden"
+                                id="sketchDataUrl"
+                                name="sketch_data_url"
+                            >
+
+                            <button
+                                type="submit"
+                                class="btn btn-dark fw-bold"
+                            >
+                                Analyze Test Dataset
+                            </button>
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const video = document.getElementById("video");
+const canvas = document.getElementById("canvas");
+const startButton = document.getElementById("startCamera");
+const captureButton = document.getElementById("capture");
+const status = document.getElementById("status");
+const resultCard = document.getElementById("resultCard");
+const sketchImage = document.getElementById("sketchImage");
+const downloadSketch = document.getElementById("downloadSketch");
+const sketchDataUrl = document.getElementById("sketchDataUrl");
+
+let stream = null;
+
+startButton.addEventListener("click", async function () {
+    try {
+        if (!navigator.mediaDevices ||
+            !navigator.mediaDevices.getUserMedia) {
+            status.textContent =
+                "Camera access is not supported by this browser.";
+            return;
+        }
+
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+        }
+
+        stream = await navigator.mediaDevices.getUserMedia({
+            video: {
+                facingMode: "user",
+                width: { ideal: 1280 },
+                height: { ideal: 720 }
+            },
+            audio: false
+        });
+
+        video.srcObject = stream;
+        await video.play();
+
+        captureButton.disabled = false;
+        startButton.textContent = "Restart Camera";
+        status.textContent =
+            "Camera ready. Position your face clearly.";
+        resultCard.style.display = "none";
+
+    } catch (error) {
+        console.error("Camera error:", error);
+
+        status.textContent =
+            "Camera access failed. Allow camera permission and try again.";
+
+        captureButton.disabled = true;
+    }
+});
+
+captureButton.addEventListener("click", async function () {
+
+    if (!stream) {
+        status.textContent = "Start the camera first.";
+        return;
+    }
+
+    if (video.videoWidth === 0 || video.videoHeight === 0) {
+        status.textContent = "Camera is not ready yet.";
+        return;
+    }
+
+    captureButton.disabled = true;
+    status.textContent =
+        "Capturing face and generating sketch...";
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    const context = canvas.getContext("2d");
+
+    // Capture a non-mirrored image.
+    context.save();
+    context.translate(canvas.width, 0);
+    context.scale(-1, 1);
+
+    context.drawImage(
+        video,
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    context.restore();
+
+    canvas.toBlob(async function (blob) {
+
+        if (!blob) {
+            status.textContent =
+                "Could not capture the camera frame.";
+            captureButton.disabled = false;
+            return;
+        }
+
+        const formData = new FormData();
+
+        formData.append(
+            "photo",
+            blob,
+            "camera_capture.jpg"
+        );
+
+        try {
+
+            const response = await fetch(
+                "{{ url_for('live_sketch') }}",
+                {
+                    method: "POST",
+                    body: formData
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+
+                status.textContent =
+                    data.message ||
+                    "Could not generate the sketch.";
+
+                captureButton.disabled = false;
+                return;
+            }
+
+            sketchImage.src =
+                data.sketch_data_url;
+
+            sketchDataUrl.value =
+                data.sketch_data_url;
+
+            downloadSketch.href =
+                data.sketch_data_url;
+
+            resultCard.style.display = "block";
+
+            status.textContent =
+                "Sketch generated successfully.";
+
+            resultCard.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+        } catch (error) {
+
+            console.error(
+                "Live sketch request failed:",
+                error
+            );
+
+            status.textContent =
+                "Server error while generating the sketch.";
+
+        } finally {
+
+            captureButton.disabled = false;
+
+        }
+
+    }, "image/jpeg", 0.95);
+});
+
+window.addEventListener("beforeunload", function () {
+
+    if (stream) {
+        stream.getTracks().forEach(
+            track => track.stop()
+        );
+    }
+
+});
+</script>
+
+{% endblock %}
